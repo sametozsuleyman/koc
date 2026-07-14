@@ -1,6 +1,6 @@
 import streamlit as st
 import google.generativeai as genai
-import requests
+from curl_cffi import requests
 from bs4 import BeautifulSoup
 import json
 import datetime
