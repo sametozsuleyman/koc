@@ -4,3 +4,5 @@ primaryColor = "#FF5300"             # TG Turuncu — butonlar, progress bar, vu
 backgroundColor = "#FFFFFF"          # Beyaz zemin (logo net okunur)
 secondaryBackgroundColor = "#E9F6F3" # Sitedeki açık mint ton — sidebar ve inputlar
 textColor = "#0B1457"                # TG Laciverti — metinler
+[client]
+toolbarMode = "viewer"
