@@ -1,8 +1,9 @@
 [theme]
 base = "light"
-primaryColor = "#FF5300"             # TG Turuncu — butonlar, progress bar, vurgular
-backgroundColor = "#FFFFFF"          # Beyaz zemin (logo net okunur)
-secondaryBackgroundColor = "#E9F6F3" # Sitedeki açık mint ton — sidebar ve inputlar
-textColor = "#0B1457"                # TG Laciverti — metinler
+primaryColor = "#EC6E00"             # Koçtaş Turuncu — butonlar, progress bar
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#FFF6ED" # Sitede kullanılan açık turuncu ton
+textColor = "#222220"                # Logo metin rengi (koyu antrasit)
+
 [client]
 toolbarMode = "viewer"
