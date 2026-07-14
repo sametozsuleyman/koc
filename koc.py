@@ -188,7 +188,7 @@ with col_logo:
 
 with col_title:
     st.title("Koçtaş Content Update & Quality Check")
-    st.markdown("**İçerik güncelliği, doğruluk ve kalite kontrol aracı.**")
+    st.markdown("**GEO - İçerik güncelliği, doğruluk ve kalite kontrol aracı.**")
 
 with st.sidebar:
     st.header("Ayarlar")
