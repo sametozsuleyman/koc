@@ -2,3 +2,4 @@ google-generativeai
 requests
 beautifulsoup4
 brotli
+curl_cffi
