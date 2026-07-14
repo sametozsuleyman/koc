@@ -164,16 +164,25 @@ def fetch_url_content(url):
     try:
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
             'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
-            'Referer': 'https://www.koctas.com.tr/'
+            'Accept-Encoding': 'gzip, deflate, br',
+            'sec-ch-ua': '"Chromium";v="126", "Not.A/Brand";v="24"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'none',
+            'Sec-Fetch-User': '?1',
+            'Upgrade-Insecure-Requests': '1',
+            'Referer': 'https://www.google.com/'
         }
         response = requests.get(url, headers=headers, timeout=15)
         response.raise_for_status()
         return response.text
     except requests.exceptions.HTTPError as err:
         if err.response.status_code == 403:
-            raise Exception("Erişim Engellendi (403). Koçtaş bot koruması isteği engelledi; izinli bir ağdan deneyin.")
+            raise Exception("Erişim Engellendi (403). Koçtaş bot koruması isteği engelledi.")
         raise Exception(f"HTTP Hatası: {err}")
     except Exception as e:
         raise Exception(f"Bağlantı hatası: {str(e)}")
@@ -191,7 +200,7 @@ with col_logo:
 
 with col_title:
     st.title("Koçtaş Content Update & Quality Check")
-    st.markdown("**GEO özelinde içerik güncelliği, doğruluk ve kalite kontrol aracı.**")
+    st.markdown("**İçerik güncelliği, doğruluk ve kalite kontrol aracı.**")
 
 with st.sidebar:
     st.header("Ayarlar")
