@@ -7,20 +7,20 @@ import datetime
 from urllib.parse import urlparse
 
 # --- Sabitler ---
-ALLOWED_DOMAIN = "teklifimgelsin.com"
-LOGO_URL = "https://cdn.teklifimgelsin.com/images/tg-logo.svg"
-FAVICON_URL = "https://teklifimgelsin.com/favicon.ico"
+ALLOWED_DOMAIN = "koctas.com.tr"
+LOGO_URL = "https://koctas-img.mncdn.com/static/koctas-logo.svg"
+FAVICON_URL = "https://koctas-img.mncdn.com/static/favicon-32x32.png"
 
 # --- Sayfa Ayarları ---
 st.set_page_config(
-    page_title="TeklifimGelsin Content Update & Quality Check",
-    page_icon=FAVICON_URL,  # TeklifimGelsin Favicon
+    page_title="Koçtaş Content Update & Quality Check",
+    page_icon=FAVICON_URL,  # Koçtaş Favicon
     layout="wide"
 )
 st.markdown("""
     <style>
-        h1, h2, h3 { color: #0B1457 !important; }
-        [data-testid="stSidebar"] { border-right: 2px solid #FF5300; }
+        h1, h2, h3 { color: #222220 !important; }
+        [data-testid="stSidebar"] { border-right: 2px solid #EC6E00; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -37,8 +37,11 @@ def clean_text(html_content):
     # Metinleri al
     text = soup.get_text(separator='\n')
 
-    # Öneri/ilgili yazı bloklarını ve sonrasını kesip at
-    split_phrases = ["İlginizi Çekebilecek Yazılar", "İlgili Yazılar", "Benzer Yazılar"]
+    # Öneri/ilgili içerik bloklarını ve sonrasını kesip at
+    split_phrases = [
+        "İlginizi Çekebilecek Yazılar", "İlgili Yazılar", "Benzer Yazılar",
+        "Benzer Ürünler", "İlginizi Çekebilecek Ürünler", "Önerilen Ürünler"
+    ]
     for phrase in split_phrases:
         if phrase in text:
             text = text.split(phrase)[0]
@@ -92,7 +95,7 @@ def analyze_with_gemini(text, source, api_key):
     today_str = datetime.date.today().strftime("%d.%m.%Y")
 
     prompt = f"""
-    Sen TeklifimGelsin (Türkiye'nin ilk kişiselleştirilmiş finansal platformu) için çalışan kıdemli bir İçerik Kalite Uzmanı ve Editörsün.
+    Sen Koçtaş (Türkiye'nin lider yapı market ve ev geliştirme perakendecisi) için çalışan kıdemli bir İçerik Kalite Uzmanı ve Editörsün.
     Bugünün tarihi: {today_str}.
 
     Aşağıdaki metin şu kaynaktan alındı: {source}
@@ -100,7 +103,8 @@ def analyze_with_gemini(text, source, api_key):
     GÖREVİN:
     1. Bu içeriği; güncellik, doğruluk, yazım kuralları ve marka dili açısından denetle.
     2. Sayfanın en üstünde yer alan **Başlık (H1)** ve **'Son Güncelleme Tarihi'** gibi meta bilgileri analize DAHİL ETME. Sadece gövde metninin kalitesine ve güncelliğine odaklan.
-    3. Sayfanın alt kısımlarındaki "İlginizi çekebilecek diğer yazılar" gibi öneri alanlarını görmezden gel.
+    3. Sayfanın alt kısımlarındaki "Benzer ürünler", "İlginizi çekebilecek ürünler" gibi öneri alanlarını görmezden gel.
+    4. Ürün/kategori sayfalarındaki fiyat, stok ve kampanya bilgilerini denetleme; bunlar dinamik verilerdir. Açıklama ve tanıtım metinlerine odaklan.
 
     YAPMA (ÖNEMLİ):
     - Link, köprü veya bağlantı eksikliğiyle ilgili HİÇBİR düzeltme veya öneri yapma.
@@ -161,20 +165,21 @@ def fetch_url_content(url):
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7'
+            'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
+            'Referer': 'https://www.koctas.com.tr/'
         }
         response = requests.get(url, headers=headers, timeout=15)
         response.raise_for_status()
         return response.text
     except requests.exceptions.HTTPError as err:
         if err.response.status_code == 403:
-            raise Exception("Erişim Engellendi (403).")
+            raise Exception("Erişim Engellendi (403). Koçtaş bot koruması isteği engelledi; izinli bir ağdan deneyin.")
         raise Exception(f"HTTP Hatası: {err}")
     except Exception as e:
         raise Exception(f"Bağlantı hatası: {str(e)}")
 
 def is_allowed_domain(url):
-    """URL'nin teklifimgelsin.com domainine ait olup olmadığını güvenli şekilde kontrol eder."""
+    """URL'nin koctas.com.tr domainine ait olup olmadığını güvenli şekilde kontrol eder."""
     netloc = urlparse(url).netloc.lower()
     return netloc == ALLOWED_DOMAIN or netloc.endswith("." + ALLOWED_DOMAIN)
 
@@ -182,10 +187,10 @@ def is_allowed_domain(url):
 
 col_logo, col_title = st.columns([1, 5])
 with col_logo:
-    st.image(LOGO_URL, width=150)
+    st.image(LOGO_URL, width=120)
 
 with col_title:
-    st.title("TeklifimGelsin Content Update & Quality Check")
+    st.title("Koçtaş Content Update & Quality Check")
     st.markdown("**İçerik güncelliği, doğruluk ve kalite kontrol aracı.**")
 
 with st.sidebar:
@@ -197,7 +202,7 @@ st.subheader("Analiz Edilecek Sayfalar")
 urls_input = st.text_area(
     "URL Listesi (Her satıra bir tane yapıştırın)",
     height=150,
-    placeholder="https://www.teklifimgelsin.com/blog/..."
+    placeholder="https://www.koctas.com.tr/mobilya/c/109"
 )
 
 analyze_button = st.button("Kontrolü Başlat", type="primary")
@@ -224,7 +229,7 @@ if analyze_button:
                 if not is_allowed_domain(url):
                     results.append({
                         "title": url,
-                        "error": "Çakallık engelleyici aktif! Sadece teklifimgelsin.com özelinde analiz yapabilirsin",
+                        "error": "Çakallık engelleyici aktif! Sadece koctas.com.tr özelinde analiz yapabilirsin",
                         "status": "error"
                     })
                     progress_bar.progress((i + 1) / len(url_list))
